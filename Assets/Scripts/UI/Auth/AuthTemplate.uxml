@@ -1,0 +1,21 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/Scripts/UI/Styles.uss?fileID=7433441132597879392&amp;guid=594079a2dfb9dc642adce03a0da924b7&amp;type=3#Styles" />
+    
+    <ui:VisualElement class="auth-page">
+        <ui:VisualElement name="login-box" class="auth-box auth-box--active">
+            <ui:Label text="Login" class="auth-box__heading" />
+            <ui:TextField name="login-email" picking-mode="Ignore" label="Email address" class="auth-box__input" />
+            <ui:TextField name="login-password" picking-mode="Ignore" label="Password" class="auth-box__input" />
+            <ui:Button name="login-submit" text="Login" class="auth-box__button" parse-escape-sequences="true" display-tooltip-when-elided="true" />
+            <ui:Button class="auth-box__link" name="signup-link" text="No Account? Sign up."/>
+        </ui:VisualElement>
+
+        <ui:VisualElement name="signup-box" class="auth-box">
+            <ui:Label text="Signup" class="auth-box__heading" />
+            <ui:TextField name="signup-email" picking-mode="Ignore" label="Email address" class="auth-box__input" />
+            <ui:TextField name="signup-password" picking-mode="Ignore" label="Password" class="auth-box__input" />
+            <ui:Button name="signup-submit" text="Signup" class="auth-box__button" parse-escape-sequences="true" display-tooltip-when-elided="true" />
+            <ui:Button class="auth-box__link" name="login-link" text="Already have an account? Sign in." />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

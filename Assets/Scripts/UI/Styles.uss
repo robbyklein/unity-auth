@@ -17,6 +17,11 @@
   padding: 32px;
   max-width: 360px;
   width: 90%;
+  display: none;
+}
+
+.auth-box--active {
+  display: flex;
 }
 
 .auth-box__heading {
@@ -45,7 +50,6 @@
 .auth-box__input #unity-text-input {
   background-color: #fff;
   padding: 12px;
-  line-height: 50px;
   font-size: 13px;
   border-color: #d5d5d5;
 }
@@ -71,4 +75,11 @@
   color: #ff0000;
   font-size: 11px;
   margin-top: 12px;
+}
+
+.auth-box__link {
+  background-color: transparent;
+  border-width: 0;
+  padding: 12px 0;
+  font-size: 11px;
 }

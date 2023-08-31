@@ -8,4 +8,6 @@ public class APIRoutes {
   }
 
   public static string LOGIN => $"{ROOT}/login";
+  public static string SIGNUP => $"{ROOT}/signup";
+  public static string VALIDATE => $"{ROOT}/validate";
 }

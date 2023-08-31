@@ -4,7 +4,7 @@ using UnityEngine.Networking;
 using Cysharp.Threading.Tasks;
 
 public class HTTP : MonoBehaviour {
-    public static async UniTask<string> PostJson<T>(string url, T body) where T : struct {
+    public static async UniTask<string> PostJson<T>(string url, T body, string authToken = null) where T : struct {
         // Serialize data to JSON
         string jsonData = JsonUtility.ToJson(body);
 
@@ -13,6 +13,11 @@ public class HTTP : MonoBehaviour {
             www.uploadHandler = new UploadHandlerRaw(bodyRaw);
             www.downloadHandler = new DownloadHandlerBuffer();
             www.SetRequestHeader("Content-Type", "application/json");
+
+            // Add auth token if provided
+            if (!string.IsNullOrEmpty(authToken)) {
+                www.SetRequestHeader("Authorization", authToken);
+            }
 
             // Send the request
             await www.SendWebRequest();
@@ -26,3 +31,4 @@ public class HTTP : MonoBehaviour {
         }
     }
 }
+
