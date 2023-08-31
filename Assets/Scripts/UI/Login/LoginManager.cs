@@ -2,16 +2,36 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.UIElements;
 using UnityEngine.Networking;
+using Cysharp.Threading.Tasks;
+using Unity.VisualScripting;
 
 public class LoginManager : MonoBehaviour {
+    // Components
+    [SerializeField] private JWTTokenManager tokenManager;
     [SerializeField] private UIDocument uiDocument;
+
+    // UI Elements
     private VisualElement rootVisualElement;
+    private VisualElement boxVisualElement;
     private TextField emailField;
     private TextField passwordField;
     private Button submitButton;
+    private Label errorElement;
 
+    // Structs
+    private struct RequestBody {
+        public string email;
+        public string password;
+    }
+
+    private struct ResponseBody {
+        public string token;
+    }
+
+    // Lifecycle
     private void OnEnable() {
         rootVisualElement = uiDocument.rootVisualElement;
+        boxVisualElement = rootVisualElement.Q("box");
         submitButton = rootVisualElement.Q<Button>("submit-button");
         emailField = rootVisualElement.Q<TextField>("email");
         passwordField = rootVisualElement.Q<TextField>("password");
@@ -19,55 +39,56 @@ public class LoginManager : MonoBehaviour {
         passwordField.maskChar = '*';
         passwordField.isPasswordField = true;
 
-        submitButton.clicked += HandleSubmit;
+        submitButton.clicked += OnSubmitClick;
     }
 
     private void OnDisable() {
-        submitButton.clicked -= HandleSubmit;
+        submitButton.clicked -= OnSubmitClick;
     }
 
-    private struct RequestBody {
-        public string email;
-        public string password;
-    }
-
-    private void HandleSubmit() {
+    // Helpers
+    private RequestBody CreateRequestBody() {
         string email = emailField.value;
         string password = passwordField.value;
 
-        StartCoroutine(PostData(email, password));
-    }
-
-    private IEnumerator PostData(string email, string password) {
-        // Create body struct
         RequestBody body = new RequestBody {
             email = email,
             password = password
         };
 
-        // Convert the payload to JSON
-        string jsonBody = JsonUtility.ToJson(body);
-
-        // Create a UnityWebRequest and set it up
-        UnityWebRequest www = new UnityWebRequest("http://localhost:3000/login", "POST");
-        byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(jsonBody);
-        www.uploadHandler = new UploadHandlerRaw(bodyRaw);
-        www.downloadHandler = new DownloadHandlerBuffer();
-        www.SetRequestHeader("Content-Type", "application/json");
-
-        // Send the request and yield until it's done
-        yield return www.SendWebRequest();
-
-        // Check if there was an error
-        if (www.result == UnityWebRequest.Result.ConnectionError) {
-            Debug.LogError("Error: " + www.error);
-        }
-        else if (www.responseCode != 200) {
-            Debug.LogError("Fuck!");
-        }
-        else {
-            Debug.Log("Received: " + www.downloadHandler.text);
-        }
+        return body;
     }
 
+    private Label CreateError(string error) {
+        Label errorEl = new Label(error);
+        errorEl.AddToClassList("auth-box__error");
+        return errorEl;
+    }
+
+    // Handlers
+    private void OnSubmitClick() {
+        HandleSubmit().Forget();
+    }
+
+    private async UniTaskVoid HandleSubmit() {
+        try {
+            // Post data
+            string response = await HTTP.PostJson(APIRoutes.LOGIN, CreateRequestBody());
+
+            // Clear old error
+            if (errorElement != null) boxVisualElement.Remove(errorElement);
+
+            // Parse response
+            ResponseBody tokenData = JsonUtility.FromJson<ResponseBody>(response);
+
+            // Store token
+            tokenManager.Token = tokenData.token;
+        }
+        catch {
+            if (errorElement == null) {
+                errorElement = CreateError("Invalid email or password");
+                boxVisualElement.Add(errorElement);
+            }
+        }
+    }
 }
