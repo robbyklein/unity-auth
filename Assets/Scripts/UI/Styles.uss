@@ -83,3 +83,10 @@
   padding: 12px 0;
   font-size: 11px;
 }
+
+.auth-box__text {
+  flex-wrap: wrap;
+  white-space: wrap;
+  font-size: 16px;
+  color: #333333;
+}

@@ -1,5 +1,5 @@
 public class APIRoutes {
-  private static readonly string DEFAULT_ROOT = "http://localhost:3000";
+  private static readonly string DEFAULT_ROOT = "https://localhost:3000";
 
   public static string ROOT {
     get {
